@@ -39,11 +39,11 @@ $errorMessage = $controller->handleReservationForm();
     <link rel="stylesheet" href="../assets/css/responsive.css">
 </head>
 <body>
-    <!-- <div class="loader">
+    <div class="loader">
         <div class="loader-inner">
             <div class="circle"></div>
         </div>
-    </div> -->
+    </div>
     <div class="breadcrumb-section breadcrumb-bg">
         <div class="container">
             <div class="row">

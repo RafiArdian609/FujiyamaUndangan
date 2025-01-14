@@ -29,7 +29,11 @@ $reservationController->handleConfirmationForm();
     <link rel="stylesheet" href="../assets/css/responsive.css">
 </head>
 <body>
-
+    <div class="loader">
+        <div class="loader-inner">
+            <div class="circle"></div>
+        </div>
+    </div>
 	<!-- breadcrumb-section -->
 	<div class="breadcrumb-section breadcrumb-bg">
 		<div class="container">
