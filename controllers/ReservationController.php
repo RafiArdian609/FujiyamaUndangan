@@ -12,29 +12,40 @@ class ReservationController {
 
     public function handleReservationForm() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // Capture the form data
+            // Ambil data dari form
             $fullName = $_POST['full_name'];
             $email = $_POST['email'];
             $phone = $_POST['phone'];
             $attendance = $_POST['attendance'];
-
-            // Validate phone number to only contain digits
+    
+            // Validasi email dan nomor telepon
             if (!ctype_digit($phone)) {
-                echo "<div style='color: red;'>Nomor telepon harus berisi angka saja.</div>";
-                return; // Stop further processing
+                $_SESSION['error_message'] = 'Nomor telepon harus berisi angka saja.';
+                return;
             }
-
-            // Validate email format
+    
             if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                echo "<div style='color: red;'>Email tidak valid. Mohon masukkan email yang benar.</div>";
-                return; // Stop further processing
+                $_SESSION['error_message'] = 'Email tidak valid. Mohon masukkan email yang benar.';
+                return;
             }
-
-            // Save the reservation data to the database using $this->reservationModel
+    
+            // Periksa apakah data sudah ada di database
+            $existingReservation = $this->reservationModel->checkExistingReservation($email, $phone);
+            if ($existingReservation) {
+                $_SESSION['error_message'] = 'Data sudah ada. Email atau nomor telepon sudah terdaftar.';
+                return;
+            }
+    
+            // Jika semua validasi berhasil, simpan data ke database
             $this->reservationModel->saveReservation($fullName, $email, $phone, $attendance);
+    
+            // Jika berhasil, berikan pesan sukses
+            $_SESSION['success_message'] = 'Reservasi berhasil!';
         }
     }
-
+    
+    
+    
     public function handleConfirmationForm() {
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Ambil data konfirmasi ulang

@@ -1,4 +1,5 @@
 <?php
+session_start();
 // Ensure the path is correct. If ReservationController.php is in the 'controllers' folder, use:
 require_once '../controllers/ReservationController.php'; // Adjust the path based on your structure
 
@@ -14,6 +15,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     header('Location: ' . $_SERVER['PHP_SELF']);
     exit;  // Make sure no further code is executed after the redirect
 }
+
+$errorMessage = $controller->handleReservationForm();
 ?>
 
 <!DOCTYPE html>
@@ -36,11 +39,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link rel="stylesheet" href="../assets/css/responsive.css">
 </head>
 <body>
-    <div class="loader">
+    <!-- <div class="loader">
         <div class="loader-inner">
             <div class="circle"></div>
         </div>
-    </div>
+    </div> -->
     <div class="breadcrumb-section breadcrumb-bg">
         <div class="container">
             <div class="row">
@@ -61,10 +64,32 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <h2>Rayakan Sakura Matsuri bersama kami! </h2>
                         <p>Reservasi sekarang di Fujiyama Restaurant! Nikmati hidangan sushi segar, ramen hangat, dan berbagai menu khas Jepang lainnya di tengah dekorasi yang indah dan meriah.</p>
                     </div>
+
+                    <div id="errorMessage" style="color: red; margin-bottom: 10px;">
+                        <?php
+                        // Menampilkan pesan error jika ada
+                        if (isset($_SESSION['error_message'])) {
+                            echo $_SESSION['error_message'];
+                            unset($_SESSION['error_message']);  // Menghapus pesan error setelah ditampilkan
+                        }
+                        ?>
+                    </div>
+
+                    <div id="successMessage" style="color: green; margin-bottom: 10px;">
+                        <?php
+                        // Menampilkan pesan sukses jika ada
+                        if (isset($_SESSION['success_message'])) {
+                            echo $_SESSION['success_message'];
+                            unset($_SESSION['success_message']);  // Menghapus pesan sukses setelah ditampilkan
+                        }
+                        ?>
+                    </div>
+
                     <div id="form_status"></div>
                     <div class="contact-form">
                         <!-- The form will post to the same page, handled by the controller -->
                         <form method="POST" action="">
+                            <div id="errorMessage" style="color: red; margin-bottom: 10px;"></div>
                             <p>
                                 <input type="text" placeholder="Nama Lengkap" name="full_name" id="full_name" required>
                                 <input type="email" placeholder="Email" name="email" id="email" required>
