@@ -27,6 +27,16 @@ $reservationController->handleConfirmationForm();
     <link rel="stylesheet" href="../assets/css/meanmenu.min.css">
     <link rel="stylesheet" href="../assets/css/main.css">
     <link rel="stylesheet" href="../assets/css/responsive.css">
+    <style>
+        .copyright a {
+            color: #F28B82;
+            font-weight: 700;
+        }
+
+        .copyright a:hover {
+            color: #FF69B4;
+        }
+    </style>
 </head>
 <body>
     <div class="loader">
@@ -99,20 +109,9 @@ $reservationController->handleConfirmationForm();
         <div class="container">
             <div class="row">
                 <div class="col-lg-6 col-md-12">
-                    <p>Copyrights &copy; 2025 - <a href="https://imransdesign.com/">Fujiyama Restaurant</a>,  All Rights Reserved.<br>
-                        Distributed By - <a href="https://themewagon.com/">Team RPL</a>
+                    <p>Copyrights &copy; 2025 - <a href="javascript:void(0);" onclick="location.reload();">Fujiyama Restaurant</a>,  All Rights Reserved.<br>
+                        Distributed By - <a href="javascript:void(0);" onclick="location.reload();">Team RPL</a>
                     </p>
-                </div>
-                <div class="col-lg-6 text-right col-md-12">
-                    <div class="social-icons">
-                        <ul>
-                            <li><a href="#" target="_blank"><i class="fab fa-facebook-f"></i></a></li>
-                            <li><a href="#" target="_blank"><i class="fab fa-twitter"></i></a></li>
-                            <li><a href="#" target="_blank"><i class="fab fa-instagram"></i></a></li>
-                            <li><a href="#" target="_blank"><i class="fab fa-linkedin"></i></a></li>
-                            <li><a href="#" target="_blank"><i class="fab fa-dribbble"></i></a></li>
-                        </ul>
-                    </div>
                 </div>
             </div>
         </div>
