@@ -44,35 +44,35 @@ class ReservationModel {
     
 
     // Periksa apakah data untuk konfirmasi ulang sudah valid
-    public function updateConfirmation($email, $phone, $attendance) {
-        // Ubah validasi nilai attendance sesuai dengan yang ada di database
-        $validAttendance = ['hadir', 'tidak_hadir']; // Array nilai valid
+    public function updateConfirmation($id, $attendance) {
+        // Validasi nilai attendance sesuai database
+        $validAttendance = ['hadir', 'tidak_hadir']; // Nilai valid
     
         // Pastikan nilai yang diterima adalah salah satu dari yang valid
         if (!in_array($attendance, $validAttendance)) {
             throw new Exception("Pilihan kehadiran tidak valid. Pilih antara 'hadir' atau 'tidak_hadir'.");
         }
     
-        // Lakukan update konfirmasi kehadiran pada database
-        $sql = "UPDATE reservasi SET konfirmasi_ulang = ? WHERE email = ? AND nomor_telepon = ?";
+        // Update atribut konfirmasi_ulang berdasarkan ID
+        $sql = "UPDATE reservasi SET konfirmasi_ulang = ? WHERE id = ?";
         $stmt = $this->db->prepare($sql);
     
         if ($stmt === false) {
             throw new Exception("Error preparing statement: " . $this->db->error);
         }
     
-        $stmt->bind_param("sss", $attendance, $email, $phone);
+        $stmt->bind_param("si", $attendance, $id);
         
         if ($stmt->execute()) {
             if ($stmt->affected_rows > 0) {
-                return true; // Data berhasil diupdate
+                return true; // Data berhasil diperbarui
             } else {
-                throw new Exception("Tidak ada data yang diperbarui. Pastikan email dan nomor telepon sesuai.");
+                throw new Exception("Tidak ada data yang diperbarui. Pastikan ID sesuai.");
             }
         } else {
             throw new Exception("Gagal memperbarui konfirmasi: " . $stmt->error);
         }
-    }    
+    }
     
 
     public function checkConfirmationStatus($email, $phone) {
@@ -103,7 +103,23 @@ class ReservationModel {
         }
         return false; // Data tidak ada
     }    
-    
+
+    public function getNamaById($id) {
+        $query = "SELECT nama_lengkap FROM reservasi WHERE id = ?";
+        $stmt = $this->db->prepare($query);
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $stmt->bind_result($nama);
+        $stmt->fetch();
+        return $nama ?? 'Tamu'; // Jika nama tidak ditemukan, kembalikan 'Tamu'
+    }
+
+    public function updateAttendance($id, $attendance) {
+        $query = "UPDATE reservasi SET attendance = ? WHERE id = ?";
+        $stmt = $this->db->prepare($query);
+        $stmt->bind_param("si", $attendance, $id);
+        return $stmt->execute();
+    }
     
 }
 ?>

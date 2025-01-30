@@ -1,22 +1,23 @@
 <?php
 session_start();
-// Ensure the path is correct. If ReservationController.php is in the 'controllers' folder, use:
-require_once '../controllers/ReservationController.php'; // Adjust the path based on your structure
+require_once '../controllers/ReservationController.php'; // Sesuaikan path sesuai struktur folder Anda
 
-// Instantiate the controller
 $controller = new ReservationController();
 
-// Handle form submission only when the form is submitted (POST request)
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Call the method to handle the form submission
-    $controller->handleReservationForm();
-    
-    // Redirect to the same page to prevent form resubmission
-    header('Location: ' . $_SERVER['PHP_SELF']);
-    exit;  // Make sure no further code is executed after the redirect
+// Ambil ID dari URL
+$id = $_GET['id'] ?? null;
+$nama = "Tamu"; // Default nama jika ID tidak ditemukan
+
+if ($id) {
+    // Ambil nama dari database berdasarkan ID
+    $nama = $controller->getNamaById($id);
 }
 
-$errorMessage = $controller->handleReservationForm();
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $controller->handleReservationForm();
+    header('Location: ' . $_SERVER['PHP_SELF'] . '?id=' . $id); // Pertahankan ID di URL setelah submit
+    exit;
+}
 ?>
 
 <!DOCTYPE html>
@@ -25,7 +26,7 @@ $errorMessage = $controller->handleReservationForm();
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Reservasi</title>
+    <title>Konfirmasi Kehadiran</title>
     <link rel="shortcut icon" type="image/png" href="../assets/img/favicon.png">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Poppins:400,700&display=swap" rel="stylesheet">
@@ -46,6 +47,59 @@ $errorMessage = $controller->handleReservationForm();
         .copyright a:hover {
             color: #FF69B4;
         }
+
+        .contact-form select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .contact-form input[type="submit"] {
+            background-color: #F28B82;
+            color: white;
+            border: none;
+            cursor: pointer;
+            padding: 10px 20px;
+            border-radius: 5px;
+        }
+
+        .contact-form input[type="submit"]:hover {
+            background-color: #FF69B4;
+        }
+
+        .welcome-message {
+            font-size: 1.5em;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .google-maps {
+            margin-top: 20px; /* Jarak dari bagian kontak di atas */
+            border-radius: 10px; /* Sudut melengkung */
+            overflow: hidden; /* Pastikan iframe tidak keluar dari container */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Efek bayangan */
+        }
+
+        .google-maps iframe {
+            width: 100%; /* Lebar penuh */
+            height: 300px; /* Tinggi iframe */
+            border: 0; /* Hilangkan border */
+        }
+        
+        .contact-form form p select {
+            width: 49%;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+        }
+
+        @media (max-width: 768px) {
+            .contact-form form p select {
+                width: 100%; /* Lebar penuh di perangkat mobile */
+            }
+        }
     </style>
 </head>
 <body>
@@ -59,8 +113,8 @@ $errorMessage = $controller->handleReservationForm();
             <div class="row">
                 <div class="col-lg-8 offset-lg-2 text-center">
                     <div class="breadcrumb-text">
-                        <p>Reservasi Fujiyama Restaurant</p>
-                        <h1>Nikmati Sakura Matsuri</h1>
+                        <p>Undangan Sakura Matsuri</p>
+                        <h1>Mari Rayakan Keindahan Sakura Bersama!</h1>
                     </div>
                 </div>
             </div>
@@ -71,47 +125,44 @@ $errorMessage = $controller->handleReservationForm();
             <div class="row">
                 <div class="col-lg-8 mb-5 mb-lg-0">
                     <div class="form-title">
-                        <h2>Rayakan Sakura Matsuri bersama kami! </h2>
-                        <p>Reservasi sekarang di Fujiyama Restaurant! Nikmati hidangan sushi segar, ramen hangat, dan berbagai menu khas Jepang lainnya di tengah dekorasi yang indah dan meriah.</p>
+                        <h2>Kami Mengundang Anda untuk Merayakan Sakura Matsuri! </h2>
+                        <p>Kami dengan senang hati mengundang Anda untuk bergabung dalam perayaan Sakura Matsuri di Fujiyama Restaurant. Nikmati suasana sakura yang memukau, hidangan lezat khas Jepang, dan momen spesial bersama kami.</p>
+                    </div>
+
+                    <div class="welcome-message">
+                        Selamat datang, Bapak/Ibu <?php echo htmlspecialchars($nama); ?>!<br> 
+                        Kami sangat menantikan kehadiran Anda dalam perayaan ini.
                     </div>
 
                     <div id="errorMessage" style="color: red; margin-bottom: 10px;">
                         <?php
-                        // Menampilkan pesan error jika ada
                         if (isset($_SESSION['error_message'])) {
                             echo $_SESSION['error_message'];
-                            unset($_SESSION['error_message']);  // Menghapus pesan error setelah ditampilkan
+                            unset($_SESSION['error_message']);
                         }
                         ?>
                     </div>
 
                     <div id="successMessage" style="color: green; margin-bottom: 10px;">
                         <?php
-                        // Menampilkan pesan sukses jika ada
                         if (isset($_SESSION['success_message'])) {
                             echo $_SESSION['success_message'];
-                            unset($_SESSION['success_message']);  // Menghapus pesan sukses setelah ditampilkan
+                            unset($_SESSION['success_message']);
                         }
                         ?>
                     </div>
 
                     <div id="form_status"></div>
                     <div class="contact-form">
-                        <!-- The form will post to the same page, handled by the controller -->
                         <form method="POST" action="">
-                            <div id="errorMessage" style="color: red; margin-bottom: 10px;"></div>
                             <p>
-                                <input type="text" placeholder="Nama Lengkap" name="full_name" id="full_name" required>
-                                <input type="email" placeholder="Email" name="email" id="email" required>
-                            </p>
-                            <p>
-                                <input type="tel" placeholder="Nomor Telepon" name="phone" id="phone" pattern="\d+" title="Hanya angka yang diperbolehkan" required>
                                 <select name="attendance" id="attendance" required>
-                                    <option value="hadir">Hadir</option>
-                                    <option value="tidak_hadir">Tidak Hadir</option>
+                                    <option value="" disabled selected>Pilih Konfirmasi Kehadiran</option>
+                                    <option value="hadir">Ya, Saya Akan Hadir   </option>
+                                    <option value="tidak_hadir">Maaf, Saya Tidak Bisa Hadir</option>
                                 </select>
                             </p>
-                            <p><input type="submit" value="Reservasi Sekarang"></p>
+                            <p><input type="submit" value="Konfirmasi Sekarang"></p>
                         </form>
                     </div>
                 </div>
@@ -125,9 +176,13 @@ $errorMessage = $controller->handleReservationForm();
                             <h4><i class="far fa-clock"></i> Jam Buka</h4>
                             <p>MON - FRIDAY: 8 to 9 PM <br> SAT - SUN: 10 to 8 PM </p>
                         </div>
-                        <div class="contact-form-box">
+                        <!-- <div class="contact-form-box">
                             <h4><i class="fas fa-address-book"></i> Kontak</h4>
                             <p>Phone: +00 111 222 3333 <br> Email: support@fruitkha.com</p>
+                        </div> -->
+
+                        <div class="google-maps">
+                            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3957.4797720527345!2d112.7639920768985!3d-7.299869671764745!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2dd7fa5385e1323d%3A0xd34919933df0314!2sSMK%2017%20Agustus%201945%20Surabaya!5e0!3m2!1sen!2sid!4v1738263792376!5m2!1sen!2sid" width="100%" height="300" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
                         </div>
                     </div>
                 </div>
@@ -142,7 +197,6 @@ $errorMessage = $controller->handleReservationForm();
                         Distributed By - <a href="javascript:void(0);" onclick="location.reload();">Team RPL</a>
                     </p>
                 </div>
-                
             </div>
         </div>
     </div>

@@ -5,58 +5,54 @@ class ReservationController {
     private $reservationModel;
 
     public function __construct() {
-        // Menginisialisasi ReservationModel
-        require_once '../models/ReservationModel.php';
         $this->reservationModel = new ReservationModel();
     }
 
     public function handleReservationForm() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Ambil data dari form
-            $fullName = $_POST['full_name'];
-            $email = $_POST['email'];
-            $phone = $_POST['phone'];
             $attendance = $_POST['attendance'];
-    
-            // Validasi email dan nomor telepon
-            if (!ctype_digit($phone)) {
-                $_SESSION['error_message'] = 'Nomor telepon harus berisi angka saja.';
+
+            // Validasi pilihan kehadiran
+            if (empty($attendance) || !in_array($attendance, ['hadir', 'tidak_hadir'])) {
+                $_SESSION['error_message'] = 'Pilihan kehadiran tidak valid.';
                 return;
             }
-    
-            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                $_SESSION['error_message'] = 'Email tidak valid. Mohon masukkan email yang benar.';
-                return;
+
+            // Simpan data ke database
+            $id = $_GET['id'] ?? null; // Ambil ID dari URL
+            if ($id) {
+                $success = $this->reservationModel->updateAttendance($id, $attendance);
+                if ($success) {
+                    $_SESSION['success_message'] = 'Konfirmasi kehadiran berhasil!';
+                } else {
+                    $_SESSION['error_message'] = 'Gagal menyimpan konfirmasi kehadiran.';
+                }
+            } else {
+                $_SESSION['error_message'] = 'ID tidak valid.';
             }
-    
-            // Periksa apakah data sudah ada di database
-            $existingReservation = $this->reservationModel->checkExistingReservation($email, $phone);
-            if ($existingReservation) {
-                $_SESSION['error_message'] = 'Data sudah ada. Email atau nomor telepon sudah terdaftar.';
-                return;
-            }
-    
-            // Jika semua validasi berhasil, simpan data ke database
-            $this->reservationModel->saveReservation($fullName, $email, $phone, $attendance);
-    
-            // Jika berhasil, berikan pesan sukses
-            $_SESSION['success_message'] = 'Reservasi berhasil!';
         }
     }
     
-    
+    public function getNamaById($id) {
+        return $this->reservationModel->getNamaById($id);
+    }
     
     public function handleConfirmationForm() {
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Ambil data konfirmasi ulang
-            $email = $_POST['email'];
-            $phone = $_POST['phone'];
+            $id = $_GET['id'] ?? null; // Ambil ID dari URL
             $attendance = $_POST['attendance'];
-
+    
+            if (!$id) {
+                throw new Exception("ID tidak ditemukan dalam URL.");
+            }
+    
             // Pastikan nilai konfirmasi ulang valid
             try {
-                $this->reservationModel->updateConfirmation($email, $phone, $attendance);
+                $this->reservationModel->updateConfirmation($id, $attendance);
             } catch (Exception $e) {
+                echo "Error: " . $e->getMessage();
             }
         }
     }
