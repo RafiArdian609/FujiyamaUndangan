@@ -37,6 +37,10 @@ class ReservationController {
     public function getNamaById($id) {
         return $this->reservationModel->getNamaById($id);
     }
+
+    public function getInstansiById($id) {
+        return $this->reservationModel->getInstansiById($id);
+    }    
     
     public function handleConfirmationForm() {
         if ($_SERVER["REQUEST_METHOD"] == "POST") {

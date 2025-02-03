@@ -18,6 +18,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     header('Location: ' . $_SERVER['PHP_SELF'] . '?id=' . $id); // Pertahankan ID di URL setelah submit
     exit;
 }
+
+$instansi = "Tidak Diketahui"; // Default jika ID tidak ditemukan
+
+if ($id) {
+    $nama = $controller->getNamaById($id);
+    $instansi = $controller->getInstansiById($id);
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -101,6 +109,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 width: 100%; /* Lebar penuh di perangkat mobile */
             }
         }
+
+        /* Style untuk span nama dan instansi */
+        span {
+            font-weight: bold;
+            color: #FF1493; /* Warna pink yang berbeda untuk nama dan instansi */
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
@@ -126,7 +141,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <div class="row">
                 <div class="col-lg-8 mb-5 mb-lg-0">
                     <div class="form-title">
-                        <h2>Kami Mengundang Bapak/Ibu <span> <?php echo htmlspecialchars($nama); ?>! </span> untuk Merayakan Sakura Matsuri! </h2>
+                        <h2>Kami Mengundang Bapak/Ibu <span> <?php echo htmlspecialchars($nama); ?>! </span> Selaku dari <span> <?php echo htmlspecialchars($instansi); ?> </span> untuk Merayakan Sakura Matsuri! </h2>
                         <p>Kami dengan senang hati mengundang Bapak/Ibu untuk bergabung dalam perayaan Sakura Matsuri di Fujiyama Restaurant. Nikmati suasana sakura yang memukau, hidangan lezat khas Jepang, dan momen spesial bersama kami.</p>
                     </div>
 

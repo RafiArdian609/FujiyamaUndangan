@@ -120,6 +120,17 @@ class ReservationModel {
         $stmt->bind_param("si", $attendance, $id);
         return $stmt->execute();
     }
+
+    public function getInstansiById($id) {
+        $query = "SELECT instansi FROM reservasi WHERE id = ?";
+        $stmt = $this->db->prepare($query);
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $stmt->bind_result($instansi);
+        $stmt->fetch();
+        return $instansi ?? 'Tidak Diketahui'; // Default jika instansi tidak ditemukan
+    }
+    
     
 }
 ?>
