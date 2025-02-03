@@ -39,13 +39,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link rel="stylesheet" href="../assets/css/main.css">
     <link rel="stylesheet" href="../assets/css/responsive.css">
     <style>
-        .copyright a {
-            color: #F28B82;
-            font-weight: 700;
+
+        .breadcrumb-text p {
+        color: #FF69B4;
         }
 
-        .copyright a:hover {
+        .copyright a {
             color: #FF69B4;
+            font-weight: 700;
         }
 
         .contact-form select {
@@ -57,7 +58,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
 
         .contact-form input[type="submit"] {
-            background-color: #F28B82;
+            background-color: #FF69B4;
             color: white;
             border: none;
             cursor: pointer;
@@ -65,8 +66,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             border-radius: 5px;
         }
 
-        .contact-form input[type="submit"]:hover {
-            background-color: #FF69B4;
+        .form-title h2 {
+            color: #FF69B4;
         }
 
         .welcome-message {
@@ -125,14 +126,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <div class="row">
                 <div class="col-lg-8 mb-5 mb-lg-0">
                     <div class="form-title">
-                        <h2>Kami Mengundang Anda untuk Merayakan Sakura Matsuri! </h2>
-                        <p>Kami dengan senang hati mengundang Anda untuk bergabung dalam perayaan Sakura Matsuri di Fujiyama Restaurant. Nikmati suasana sakura yang memukau, hidangan lezat khas Jepang, dan momen spesial bersama kami.</p>
+                        <h2>Kami Mengundang Bapak/Ibu <span> <?php echo htmlspecialchars($nama); ?>! </span> untuk Merayakan Sakura Matsuri! </h2>
+                        <p>Kami dengan senang hati mengundang Bapak/Ibu untuk bergabung dalam perayaan Sakura Matsuri di Fujiyama Restaurant. Nikmati suasana sakura yang memukau, hidangan lezat khas Jepang, dan momen spesial bersama kami.</p>
                     </div>
 
-                    <div class="welcome-message">
-                        Selamat datang, Bapak/Ibu <?php echo htmlspecialchars($nama); ?>!<br> 
-                        Kami sangat menantikan kehadiran Anda dalam perayaan ini.
-                    </div>
 
                     <div id="errorMessage" style="color: red; margin-bottom: 10px;">
                         <?php
@@ -170,11 +167,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <div class="contact-form-wrap">
                         <div class="contact-form-box">
                             <h4><i class="fas fa-map"></i> Alamat Restoran</h4>
-                            <p>34/8, East Hukupara <br> Gifirtok, Sadan. <br> Country Name</p>
+                            Jl. Nginden Semolo No.44, Surabaya<br>
+                            (Bertempat di Lobby Sekolah)
                         </div>
                         <div class="contact-form-box">
-                            <h4><i class="far fa-clock"></i> Jam Buka</h4>
-                            <p>MON - FRIDAY: 8 to 9 PM <br> SAT - SUN: 10 to 8 PM </p>
+                            <h4><i class="far fa-clock"></i> Jam Buka / <br> Registrasi Tamu</h4>
+                            <p>Kamis, 6 Februari: <br> 9.30 - 10.00 (Registrasi Tamu)</p>
                         </div>
                         <!-- <div class="contact-form-box">
                             <h4><i class="fas fa-address-book"></i> Kontak</h4>
