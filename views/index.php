@@ -1,37 +1,32 @@
 <?php
 session_start();
-require_once '../controllers/ReservationController.php'; // Sesuaikan path sesuai struktur folder Anda
+require_once '../controllers/ReservationController.php';
 
 $controller = new ReservationController();
+$controller->handleReservationForm(); // Memproses form jika dikirim
 
-// Ambil ID dari URL
-$id = $_GET['id'] ?? null;
-$nama = "Tamu"; // Default nama jika ID tidak ditemukan
+// Ambil nama dari URL
+$name = isset($_GET['nama']) ? urldecode($_GET['nama']) : null;
 
-if ($id) {
-    // Ambil nama dari database berdasarkan ID
-    $nama = $controller->getNamaById($id);
+if (!$name) {
+    die("Nama tidak ditemukan dalam URL.");
 }
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $controller->handleReservationForm();
-    header('Location: ' . $_SERVER['PHP_SELF'] . '?id=' . $id); // Pertahankan ID di URL setelah submit
-    exit;
+// Ambil data user berdasarkan nama
+$userData = $controller->getUserDataByName($name);
+
+if (!$userData || empty($userData['id'])) {
+    die("Nama tidak ditemukan dalam database.");
 }
 
-$instansi = "Tidak Diketahui"; // Default jika ID tidak ditemukan
-
-if ($id) {
-    $nama = $controller->getNamaById($id);
-    $instansi = $controller->getInstansiById($id);
-}
+$nama = htmlspecialchars($name);
+$instansi = htmlspecialchars($userData['instansi'] ?? 'Tidak Diketahui');
 
 
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -49,8 +44,9 @@ if ($id) {
     <link rel="stylesheet" href="../assets/css/main.css">
     <link rel="stylesheet" href="../assets/css/responsive.css">
     <style>
+
         .breadcrumb-text p {
-            color: #FF69B4;
+        color: #FF69B4;
         }
 
         .copyright a {
@@ -86,25 +82,18 @@ if ($id) {
         }
 
         .google-maps {
-            margin-top: 20px;
-            /* Jarak dari bagian kontak di atas */
-            border-radius: 10px;
-            /* Sudut melengkung */
-            overflow: hidden;
-            /* Pastikan iframe tidak keluar dari container */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            /* Efek bayangan */
+            margin-top: 20px; /* Jarak dari bagian kontak di atas */
+            border-radius: 10px; /* Sudut melengkung */
+            overflow: hidden; /* Pastikan iframe tidak keluar dari container */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Efek bayangan */
         }
 
         .google-maps iframe {
-            width: 100%;
-            /* Lebar penuh */
-            height: 300px;
-            /* Tinggi iframe */
-            border: 0;
-            /* Hilangkan border */
+            width: 100%; /* Lebar penuh */
+            height: 300px; /* Tinggi iframe */
+            border: 0; /* Hilangkan border */
         }
-
+        
         .contact-form form p select {
             width: 49%;
             padding: 15px;
@@ -114,21 +103,18 @@ if ($id) {
 
         @media (max-width: 768px) {
             .contact-form form p select {
-                width: 100%;
-                /* Lebar penuh di perangkat mobile */
+                width: 100%; /* Lebar penuh di perangkat mobile */
             }
         }
 
         /* Style untuk span nama dan instansi */
         span {
             font-weight: bold;
-            color: #FF1493;
-            /* Warna pink yang berbeda untuk nama dan instansi */
+            color: #FF1493; /* Warna pink yang berbeda untuk nama dan instansi */
             text-decoration: underline;
         }
     </style>
 </head>
-
 <body>
     <div class="loader">
         <div class="loader-inner">
@@ -153,9 +139,7 @@ if ($id) {
                 <div class="col-lg-8 mb-5 mb-lg-0">
                     <div class="form-title">
                         <h2>Kami Mengundang Bapak/Ibu <span> <?php echo htmlspecialchars($nama); ?>! </span> Selaku dari <span> <?php echo htmlspecialchars($instansi); ?> </span> untuk Merayakan Sakura Matsuri! </h2>
-                        <p>Kami dengan senang hati mengundang Bapak/Ibu untuk bergabung dalam perayaan Sakura Matsuri di Fujiyama Restaurant. Nikmati suasana sakura yang memukau, hidangan lezat khas Jepang, dan momen spesial bersama kami.
-                            <br> ( Undangan Berlaku Untuk 1 Orang )
-                        </p>
+                        <p>Kami dengan senang hati mengundang Bapak/Ibu untuk bergabung dalam perayaan Sakura Matsuri di Fujiyama Restaurant. Nikmati suasana sakura yang memukau, hidangan lezat khas Jepang, dan momen spesial bersama kami.</p>
                     </div>
 
 
@@ -180,15 +164,17 @@ if ($id) {
                     <div id="form_status"></div>
                     <div class="contact-form">
                         <form method="POST" action="">
+                            <input type="hidden" name="nama" value="<?php echo htmlspecialchars($nama); ?>"> 
                             <p>
                                 <select name="attendance" id="attendance" required>
                                     <option value="" disabled selected>Pilih Konfirmasi Kehadiran</option>
-                                    <option value="hadir">Ya, Saya Akan Hadir </option>
+                                    <option value="hadir">Ya, Saya Akan Hadir</option>
                                     <option value="tidak_hadir">Maaf, Saya Tidak Bisa Hadir</option>
                                 </select>
                             </p>
                             <p><input type="submit" value="Konfirmasi Sekarang"></p>
                         </form>
+
                     </div>
                 </div>
                 <div class="col-lg-4">
@@ -219,7 +205,7 @@ if ($id) {
         <div class="container">
             <div class="row">
                 <div class="col-lg-6 col-md-12">
-                    <p>Copyrights &copy; 2025 - <a href="javascript:void(0);" onclick="location.reload();">Fujiyama Restaurant</a>, All Rights Reserved.<br>
+                    <p>Copyrights &copy; 2025 - <a href="javascript:void(0);" onclick="location.reload();">Fujiyama Restaurant</a>,  All Rights Reserved.<br>
                         Distributed By - <a href="javascript:void(0);" onclick="location.reload();">Team RPL</a>
                     </p>
                 </div>
@@ -238,5 +224,4 @@ if ($id) {
     <script src="../assets/js/form-validate.js"></script>
     <script src="../assets/js/main.js"></script>
 </body>
-
 </html>

@@ -1,5 +1,5 @@
 <?php
-require_once '../models/ReservationModel.php'; // Make sure the path to your model is correct
+require_once '../models/ReservationModel.php';
 
 class ReservationController {
     private $reservationModel;
@@ -10,55 +10,34 @@ class ReservationController {
 
     public function handleReservationForm() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // Ambil data dari form
-            $attendance = $_POST['attendance'];
-
-            // Validasi pilihan kehadiran
-            if (empty($attendance) || !in_array($attendance, ['hadir', 'tidak_hadir'])) {
+            $attendance = $_POST['attendance'] ?? null;
+            $nama = $_POST['nama'] ?? null; // Ambil nama dari form
+    
+            if (!$attendance || !in_array($attendance, ['hadir', 'tidak_hadir'])) {
                 $_SESSION['error_message'] = 'Pilihan kehadiran tidak valid.';
-                return;
+                return false;
             }
-
-            // Simpan data ke database
-            $id = $_GET['id'] ?? null; // Ambil ID dari URL
-            if ($id) {
-                $success = $this->reservationModel->updateAttendance($id, $attendance);
-                if ($success) {
-                    $_SESSION['success_message'] = 'Konfirmasi kehadiran berhasil!';
-                } else {
-                    $_SESSION['error_message'] = 'Gagal menyimpan konfirmasi kehadiran.';
-                }
+    
+            if (!$nama) {
+                $_SESSION['error_message'] = 'Nama tidak valid.';
+                return false;
+            }
+    
+            $success = $this->reservationModel->updateAttendanceByName($nama, $attendance);
+            if ($success) {
+                $_SESSION['success_message'] = 'Konfirmasi kehadiran berhasil!';
+                return true;
             } else {
-                $_SESSION['error_message'] = 'ID tidak valid.';
+                $_SESSION['error_message'] = 'Gagal menyimpan konfirmasi kehadiran.';
+                return false;
             }
         }
     }
     
-    public function getNamaById($id) {
-        return $this->reservationModel->getNamaById($id);
-    }
 
-    public function getInstansiById($id) {
-        return $this->reservationModel->getInstansiById($id);
-    }    
-    
-    public function handleConfirmationForm() {
-        if ($_SERVER["REQUEST_METHOD"] == "POST") {
-            // Ambil data konfirmasi ulang
-            $id = $_GET['id'] ?? null; // Ambil ID dari URL
-            $attendance = $_POST['attendance'];
-    
-            if (!$id) {
-                throw new Exception("ID tidak ditemukan dalam URL.");
-            }
-    
-            // Pastikan nilai konfirmasi ulang valid
-            try {
-                $this->reservationModel->updateConfirmation($id, $attendance);
-            } catch (Exception $e) {
-                echo "Error: " . $e->getMessage();
-            }
-        }
+    public function getUserDataByName($name) {
+        return $this->reservationModel->getUserByName($name);
     }
 }
+
 ?>
