@@ -26,10 +26,12 @@ if ($id) {
     $instansi = $controller->getInstansiById($id);
 }
 
+
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -47,9 +49,8 @@ if ($id) {
     <link rel="stylesheet" href="../assets/css/main.css">
     <link rel="stylesheet" href="../assets/css/responsive.css">
     <style>
-
         .breadcrumb-text p {
-        color: #FF69B4;
+            color: #FF69B4;
         }
 
         .copyright a {
@@ -85,18 +86,25 @@ if ($id) {
         }
 
         .google-maps {
-            margin-top: 20px; /* Jarak dari bagian kontak di atas */
-            border-radius: 10px; /* Sudut melengkung */
-            overflow: hidden; /* Pastikan iframe tidak keluar dari container */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Efek bayangan */
+            margin-top: 20px;
+            /* Jarak dari bagian kontak di atas */
+            border-radius: 10px;
+            /* Sudut melengkung */
+            overflow: hidden;
+            /* Pastikan iframe tidak keluar dari container */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            /* Efek bayangan */
         }
 
         .google-maps iframe {
-            width: 100%; /* Lebar penuh */
-            height: 300px; /* Tinggi iframe */
-            border: 0; /* Hilangkan border */
+            width: 100%;
+            /* Lebar penuh */
+            height: 300px;
+            /* Tinggi iframe */
+            border: 0;
+            /* Hilangkan border */
         }
-        
+
         .contact-form form p select {
             width: 49%;
             padding: 15px;
@@ -106,18 +114,21 @@ if ($id) {
 
         @media (max-width: 768px) {
             .contact-form form p select {
-                width: 100%; /* Lebar penuh di perangkat mobile */
+                width: 100%;
+                /* Lebar penuh di perangkat mobile */
             }
         }
 
         /* Style untuk span nama dan instansi */
         span {
             font-weight: bold;
-            color: #FF1493; /* Warna pink yang berbeda untuk nama dan instansi */
+            color: #FF1493;
+            /* Warna pink yang berbeda untuk nama dan instansi */
             text-decoration: underline;
         }
     </style>
 </head>
+
 <body>
     <div class="loader">
         <div class="loader-inner">
@@ -142,7 +153,9 @@ if ($id) {
                 <div class="col-lg-8 mb-5 mb-lg-0">
                     <div class="form-title">
                         <h2>Kami Mengundang Bapak/Ibu <span> <?php echo htmlspecialchars($nama); ?>! </span> Selaku dari <span> <?php echo htmlspecialchars($instansi); ?> </span> untuk Merayakan Sakura Matsuri! </h2>
-                        <p>Kami dengan senang hati mengundang Bapak/Ibu untuk bergabung dalam perayaan Sakura Matsuri di Fujiyama Restaurant. Nikmati suasana sakura yang memukau, hidangan lezat khas Jepang, dan momen spesial bersama kami.</p>
+                        <p>Kami dengan senang hati mengundang Bapak/Ibu untuk bergabung dalam perayaan Sakura Matsuri di Fujiyama Restaurant. Nikmati suasana sakura yang memukau, hidangan lezat khas Jepang, dan momen spesial bersama kami.
+                            <br> ( Undangan Berlaku Untuk 1 Orang )
+                        </p>
                     </div>
 
 
@@ -170,7 +183,7 @@ if ($id) {
                             <p>
                                 <select name="attendance" id="attendance" required>
                                     <option value="" disabled selected>Pilih Konfirmasi Kehadiran</option>
-                                    <option value="hadir">Ya, Saya Akan Hadir   </option>
+                                    <option value="hadir">Ya, Saya Akan Hadir </option>
                                     <option value="tidak_hadir">Maaf, Saya Tidak Bisa Hadir</option>
                                 </select>
                             </p>
@@ -206,7 +219,7 @@ if ($id) {
         <div class="container">
             <div class="row">
                 <div class="col-lg-6 col-md-12">
-                    <p>Copyrights &copy; 2025 - <a href="javascript:void(0);" onclick="location.reload();">Fujiyama Restaurant</a>,  All Rights Reserved.<br>
+                    <p>Copyrights &copy; 2025 - <a href="javascript:void(0);" onclick="location.reload();">Fujiyama Restaurant</a>, All Rights Reserved.<br>
                         Distributed By - <a href="javascript:void(0);" onclick="location.reload();">Team RPL</a>
                     </p>
                 </div>
@@ -225,4 +238,5 @@ if ($id) {
     <script src="../assets/js/form-validate.js"></script>
     <script src="../assets/js/main.js"></script>
 </body>
+
 </html>
